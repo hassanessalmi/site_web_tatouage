@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traduction du Site Web</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="content">
+        <h1>Bonjour le monde!</h1>
+        <p>Ceci est un exemple de contenu de site web.</p>
+    </div>
+    <select id="languageSelector">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="de">Deutsch</option>
+        <option value="zh-CN">中文</option>
+    </select>
+    <script>
+        // Remplacez 'YOUR_API_KEY' par votre clé API Google Translate
+        const apiKey = 'YOUR_API_KEY';
+
+        $('#languageSelector').change(function () {
+            const targetLanguage = $(this).val();
+            const textElements = $('#content').find('h1, p');
+
+            textElements.each(function () {
+                const text = $(this).text();
+                translateText(text, targetLanguage, $(this));
+            });
+        });
+
+        function translateText(text, targetLanguage, element) {
+            const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: JSON.stringify({
+                    q: text,
+                    target: targetLanguage
+                }),
+                contentType: 'application/json',
+                success: function (response) {
+                    const translatedText = response.data.translations[0].translatedText;
+                    element.text(translatedText);
+                },
+                error: function (error) {
+                    console.error('Erreur de traduction : ', error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
